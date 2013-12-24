@@ -64,15 +64,20 @@ class Less
      */
     public function render($tpl, $vars = array())
     {
+        $this->getEnvironment()
+            ->parse($tpl);
         return $this->getEnvironment()
-                    ->parse($tpl);
+            ->getCss();
     }
 
     protected function getEnvironment($reset = false)
     {
         if ($reset === true || null === $this->lessc) {
-            $this->lessc = new \lessc;
-            $this->lessc->addImportDir($this->getConfigFor('phr_template_dir'));
+            $this->lessc = new \Less_Parser();
+            // add template dir to path for imports
+            $this->lessc->SetImportDirs(array(
+                $this->getConfigFor('phr_template_dir') => $this->getConfigFor('phr_template_dir')
+            ));
         }
 
         return $this->lessc;
